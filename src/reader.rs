@@ -32,10 +32,8 @@ impl<R: BinReaderExt + Read> LumpReader<R> {
     pub fn read_entities(&mut self) -> BspResult<Entities> {
         let mut data: Vec<u8> = vec![0; self.length];
         self.inner.read_exact(&mut data)?;
-        let entities = String::from_utf8(data)
-            .map_err(|e| StringError::from(e.utf8_error()))?
-            .to_ascii_lowercase();
-        Ok(Entities { entities })
+        let entities = String::from_utf8_lossy(&data).to_string();
+        Ok(Entities { entities, entities_u8: data })
     }
 
     /// Read a list of items with a fixed size

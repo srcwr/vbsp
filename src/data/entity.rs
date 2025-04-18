@@ -10,6 +10,7 @@ use vdf_reader::VdfError;
 #[derive(Clone)]
 pub struct Entities {
     pub entities: String,
+    pub entities_u8: Vec<u8>,
 }
 
 impl fmt::Debug for Entities {
