@@ -1,4 +1,4 @@
-mod bspfile;
+pub mod bspfile;
 pub mod data;
 pub mod error;
 mod handle;
@@ -56,7 +56,7 @@ pub struct Bsp {
 }
 
 impl Bsp {
-    pub fn read(data: &[u8]) -> BspResult<Self> {
+    pub fn read(data: &[u8]) -> BspResult<(Self, BspFile)> {
         let bsp_file = BspFile::new(data)?;
 
         let entities = bsp_file.lump_reader(LumpType::Entities)?.read_entities()?;
@@ -165,7 +165,7 @@ impl Bsp {
             pack,
         };
         bsp.validate()?;
-        Ok(bsp)
+        Ok((bsp, bsp_file))
     }
 
     pub fn leaf(&self, n: usize) -> Option<Handle<'_, Leaf>> {
