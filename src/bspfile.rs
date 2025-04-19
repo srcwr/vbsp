@@ -46,11 +46,16 @@ impl<'a> BspFile<'a> {
         &self.directories[lump]
     }
 
-    pub fn get_lump(&self, lump: &LumpEntry) -> BspResult<Cow<[u8]>> {
+    pub fn get_lump_raw(&self, lump: &LumpEntry) -> BspResult<&[u8]> {
         let raw_data = self
             .data
             .get(lump.offset as usize..lump.offset as usize + lump.length as usize)
             .ok_or(BspError::LumpOutOfBounds(*lump))?;
+        Ok(raw_data)
+    }
+
+    pub fn get_lump(&self, lump: &LumpEntry) -> BspResult<Cow<[u8]>> {
+        let raw_data = self.get_lump_raw(lump)?;
 
         Ok(match lump.ident {
             0 => Cow::Borrowed(raw_data),
