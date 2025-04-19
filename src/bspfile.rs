@@ -137,4 +137,16 @@ pub enum LumpType {
     DisplacementMultiBlend,
 }
 
+impl TryFrom<u32> for LumpType {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        if value <= 63 {
+            Ok(unsafe { std::mem::transmute(value) })
+        } else {
+            Err(())
+        }
+    }
+}
+
 static_assertions::const_assert_eq!(LumpType::DisplacementMultiBlend as usize, 63);
