@@ -2,6 +2,7 @@ use crate::bspfile::LumpType;
 use crate::data::*;
 use thiserror::Error;
 pub use vbsp_common::EntityParseError;
+#[cfg(feature = "zip")]
 use zip::result::ZipError;
 
 #[non_exhaustive]
@@ -37,6 +38,7 @@ pub enum BspError {
     Validation(#[from] ValidationError),
     #[error(transparent)]
     LumpVersion(UnsupportedLumpVersion),
+    #[cfg(feature = "zip")]
     #[error(transparent)]
     Zip(#[from] ZipError),
 }

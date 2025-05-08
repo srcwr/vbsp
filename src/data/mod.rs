@@ -9,23 +9,31 @@ pub use self::entity::*;
 pub use self::game::*;
 pub use self::leaves::*;
 use crate::bspfile::LumpType;
-use crate::{BspResult, StringError};
+#[cfg(feature = "zip")]
+use crate::BspResult;
+use crate::StringError;
 use arrayvec::ArrayString;
 use binrw::error::CustomError;
 use binrw::{BinRead, BinResult, Endian};
 use bitflags::bitflags;
 use bv::BitVec;
 use num_enum::{TryFromPrimitive, TryFromPrimitiveError};
+#[cfg(feature = "zip")]
 use std::borrow::Cow;
 use std::cmp::min;
 use std::fmt;
 use std::fmt::{Debug, Display, Formatter};
-use std::io::{Cursor, Read, Seek};
+use std::io::{Read, Seek};
+#[cfg(feature = "zip")]
+use std::io::Cursor;
 use std::mem::size_of;
 use std::ops::Index;
+#[cfg(feature = "zip")]
 use std::sync::Mutex;
 pub use vbsp_common::{Angles, Color, EntityProp, LightColor, Negated, PropPlacement, Vector};
+#[cfg(feature = "zip")]
 use zip::result::ZipError;
+#[cfg(feature = "zip")]
 use zip::ZipArchive;
 
 /// Validate that reading the type consumes `size_of::<T>()` bytes
@@ -509,10 +517,12 @@ pub struct VertNormalIndex {
     pub index: i16,
 }
 
+#[cfg(feature = "zip")]
 pub struct Packfile {
     zip: Mutex<ZipArchive<Cursor<Vec<u8>>>>,
 }
 
+#[cfg(feature = "zip")]
 impl Clone for Packfile {
     fn clone(&self) -> Self {
         Packfile {
@@ -521,6 +531,7 @@ impl Clone for Packfile {
     }
 }
 
+#[cfg(feature = "zip")]
 impl Debug for Packfile {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         f.debug_struct("Packfile")
@@ -538,6 +549,7 @@ impl Debug for Packfile {
     }
 }
 
+#[cfg(feature = "zip")]
 impl Packfile {
     pub fn read(data: Cow<[u8]>) -> BspResult<Self> {
         let reader = Cursor::new(data.into_owned());

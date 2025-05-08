@@ -11,6 +11,10 @@ readme = "README.md"
 exclude = ["*.bsp"]
 rust-version = "1.85.0"
 
+[features]
+default = ["zip"]
+zip = ["dep:zip"]
+
 [dependencies]
 vbsp-common = { version = "0.1.0", path = "common" }
 arrayvec = "0.7.6"
@@ -21,7 +25,7 @@ lzma-rs = "0.3.0"
 binrw = "0.14.1"
 static_assertions = "1.1.0"
 num_enum = "0.7.3"
-zip = { package = "zip-lzma", version = "0.6.3", default-features = false, features = ["lzma"] }
+zip = { version = "2.6.1", default-features = false, features = ["lzma"], optional = true }
 itertools = "0.14.0"
 ahash = "0.8.11"
 serde = "1.0.218"

@@ -52,6 +52,7 @@ pub struct Bsp {
     vertex_normals: Vec<VertNormal>,
     vertex_normal_indices: Vec<VertNormalIndex>,
     pub static_props: PropStaticGameLump,
+    #[cfg(feature = "zip")]
     pub pack: Packfile,
 }
 
@@ -129,6 +130,7 @@ impl Bsp {
             .lump_reader(LumpType::VertNormalIndices)?
             .read_vec(|r| r.read())?;
         let game_lumps: GameLumpHeader = bsp_file.lump_reader(LumpType::GameLump)?.read()?;
+        #[cfg(feature = "zip")]
         let pack = Packfile::read(bsp_file.lump_reader(LumpType::PakFile)?.into_data())?;
 
         let static_props = game_lumps
@@ -162,6 +164,7 @@ impl Bsp {
             vertex_normals,
             vertex_normal_indices,
             static_props,
+            #[cfg(feature = "zip")]
             pack,
         };
         bsp.validate()?;
